@@ -1,0 +1,9 @@
+---
+locked_files:
+- bin/
+- bin/*
+- metadata/
+- ioncube_loader/
+- ioncube_loader/*
+- env/
+- env/*

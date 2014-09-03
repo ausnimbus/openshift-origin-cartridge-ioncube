@@ -1,0 +1,21 @@
+#!/bin/bash
+
+HTTPD_PID_FILE=$OPENSHIFT_PHP_DIR/run/httpd.pid
+
+while true
+do
+   ATIME=`stat -c %Z $PHPRC`
+
+   if [[ "$ATIME" != "$LTIME" ]]
+   then
+       	grep "zend_extension = $OPENSHIFT_IONCUBE_DIR/ioncube_loader/ioncube/ioncube_loader_lin_$OPENSHIFT_PHP_VERSION.so" $PHPRC || echo "zend_extension = $OPENSHIFT_IONCUBE_DIR/ioncube_loader/ioncube/ioncube_loader_lin_$OPENSHIFT_PHP_VERSION.so" >> $PHPRC
+		LTIME=$ATIME
+
+		# reload apache
+		httpd_pid=`cat "$HTTPD_PID_FILE" 2> /dev/null`
+		kill -USR1 $httpd_pid && wait_for_pid_file $HTTPD_PID_FILE
+
+   fi
+   sleep 5
+done
+

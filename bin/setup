@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+case "$1" in
+  -v|--version)
+    version="$2"
+esac
+
+mkdir -p $OPENSHIFT_IONCUBE_DIR/{ioncube_loader,pid}
+cd $OPENSHIFT_IONCUBE_DIR//ioncube_loader
+
+wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+tar -xvf ioncube_loaders_lin_x86-64.tar.gz
+
+grep "zend_extension = $OPENSHIFT_IONCUBE_DIR/ioncube_loader/ioncube/ioncube_loader_lin_$OPENSHIFT_PHP_VERSION.so" $PHPRC || echo "zend_extension = $OPENSHIFT_IONCUBE_DIR/ioncube_loader/ioncube/ioncube_loader_lin_$OPENSHIFT_PHP_VERSION.so" >> $PHPRC

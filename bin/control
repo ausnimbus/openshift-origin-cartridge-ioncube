@@ -1,0 +1,33 @@
+#!/bin/bash -e
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+function start {
+  nohup $OPENSHIFT_IONCUBE_DIR/bin/monitor > /dev/null 2>&1 & echo $! > $OPENSHIFT_IONCUBE_DIR/pid/run.pid
+  echo "IonCube is loaded..."
+}
+
+function stop {
+  kill -9 `cat $OPENSHIFT_IONCUBE_DIR/pid/run.pid`
+  echo "IonCube will no longer be auto loaded.."
+}
+
+function status {
+  grep "zend_extension = $OPENSHIFT_IONCUBE_DIR/ioncube_loader/ioncube/ioncube_loader_lin_$OPENSHIFT_PHP_VERSION.so" $PHPRC && echo "Ioncube is loaded"
+}
+
+# Clean up any log files
+function tidy() {
+  client_message "Nothing to clear..."
+}
+
+case "$1" in
+  start) start ;;
+  stop) stop ;;
+  restart)
+    stop
+    start
+  ;;
+  status) status ;;
+  tidy) tidy ;;
+esac
